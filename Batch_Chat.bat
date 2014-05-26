@@ -13,7 +13,7 @@ set room=Lobby
 if "%1" == "messages" goto messagesstart
 ::Checks for the reset argument to reset the batch chat
 if "%1" == "-reset" goto resetstart
-title Batch Chat - %version%
+title Batch Chat - v1.2
 goto config
 
 ::Adds required files to data directory
