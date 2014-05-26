@@ -65,7 +65,7 @@ if exist "networkdrive.bat" del /F "networkdrive.bat"
 set presection=chat
 goto load
 
-;;Methods
+::Methods
 
 :load
 ::Puts your name and rank in a file for future use
@@ -76,7 +76,7 @@ crypt -encrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "in.bat" -outfile "se
 del /F "in.bat"
 goto %presection%
 
-:decryptsettingss
+:decryptsettings
 cd "%appdata%\Batch_Chat"
 crypt -decrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "settings.bat" -outfile "out.bat">NUL
 call "out.bat"
