@@ -40,7 +40,14 @@ echo  What is your name?
 echo.
 set /p name=">"
 ::Adds your username and other data into the chat drive
-if exist "Z:\users\%name%" echo Name taken && pause >NUL && goto start
+if exist "Z:\users\%name%" (
+  cls
+  echo.
+  echo %name% is taken.
+  echo.
+  pause >NUL
+  goto start
+)
 if not exist "Z:\users\%name%" mkdir "Z:\users\%name%"
 ::Creates chat file
 if not exist "Z:\chat.crm" echo > "Z:\chat.crm"
