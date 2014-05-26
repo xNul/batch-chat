@@ -18,6 +18,7 @@ the internet.
   - Quick start
   - Command and help inheritance (for future ranks)
   - Tag -reset to reset all data
+  - File encryption
 
 ###Commands:
   - /afk - Says you've gone afk
@@ -39,11 +40,13 @@ the internet.
 
 ###Plans:
   - ~~Add custom network drive/custom setup~~
-  - ~~Add file~~ encryption with crypt binary
+  - ~~Add file encryption with crypt binary~~
   - Add rooms
   - Add legitimate ranks
   - Add an update system (eh, might as well)
+  - Add encryption command
   - Add more creative, fun, enjoyable commands
+  - Add custom commands
 
 
 

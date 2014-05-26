@@ -64,6 +64,9 @@ if exist "networkdrive.bat" del /F "networkdrive.bat"
 ::Sets the place where it is supposed to be
 set presection=chat
 goto load
+
+;;Methods
+
 :load
 ::Puts your name and rank in a file for future use
 echo set name=%name%> "in.bat"
@@ -73,11 +76,19 @@ crypt -encrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "in.bat" -outfile "se
 del /F "in.bat"
 goto %presection%
 
-:decryptsettings
+:decryptsettingss
 cd "%appdata%\Batch_Chat"
 crypt -decrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "settings.bat" -outfile "out.bat">NUL
 call "out.bat"
 del /F "out.bat"
+goto %presection%
+
+:sendmsg
+crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\chatout.crm"
+echo %sendmessage%>> "%appdata%\Batch_Chat\chatout.crm"
+del /F "%networkdrive%\chat.crm"
+crypt -encrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%appdata%\Batch_Chat\chatout.crm" -outfile "%networkdrive%\chat.crm"
+del /F "%appdata%\Batch_Chat\chatout.crm"
 goto %presection%
 
 
@@ -106,8 +117,10 @@ title Batch Chat - %room%
 echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-::Prints chat to the screen and sets the last line to a variable
-for /f "tokens=1,2,3 delims=" %%a IN ("%networkdrive%\chat.crm") DO (colous Writesec "%%a"&set check=%%a)
+::Decrypts and prints chat to the screen and sets the last line to a variable
+crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\out.crm"
+for /f "tokens=1,2,3 delims=" %%a IN ("%appdata%\Batch_Chat\out.crm") DO (colous Writesec "%%a"&set check=%%a)
+del /F "%appdata%\Batch_Chat\out.crm"
 ::Saves the last line to another variable
 set old=%check%
 goto loop
@@ -121,8 +134,10 @@ if exist "%networkdrive%\users\%name%\cls.dat" goto cls
 if exist "%networkdrive%\users\%name%\quit.dat" rmdir /S /Q "%networkdrive%\users\%name%"&exit
 ::Prints history to screen
 if exist "%networkdrive%\users\%name%\history.dat" goto history
-::Prints chat to the screen and sets the last line to a variable
-for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%networkdrive%\chat.crm"`) DO (set check=%%a)
+::Decrypts and prints chat to the screen and sets the last line to a variable
+crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\out.crm"
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\out.crm"`) DO (set check=%%a)
+del /F "%appdata%\Batch_Chat\out.crm"
 ::Checks to see if the last line has changed (a new message has been sent) if it has then it prints it to the screen, makes the directory the files, sets it as the new old variable, and plays a tune if a file isn't there
 if NOT "%check%" == "%old%" (
   colous Writesec "%check%"
@@ -310,7 +325,11 @@ set presection=messagestartcall
 goto decryptsettings
 :messagestartcall
 ::Sends a joining message to the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has joined>> "%networkdrive%\chat.crm"&&echo chat>> "%networkdrive%\users\%name%\ping.dat"
+set presection=joinmsg
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has joined
+goto sendmsg
+:joinmsg
+echo chat>> "%networkdrive%\users\%name%\ping.dat"
 goto messages
 
 :messages
@@ -336,7 +355,11 @@ if /I "%message%" == "/say" goto say
 goto commandsDirector
 :inheritAdmin
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=adminMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:adminMessage
+echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgAdmin
 
 :msgDirector
@@ -348,7 +371,11 @@ set /p message=Say:
 goto commandsModerator
 :inheritDirector
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=directorMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:directorMessage
+echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgDirector
 
 :msgModerator
@@ -360,7 +387,11 @@ set /p message=Say:
 goto commandsOperator
 :inheritModerator
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=moderatorMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:moderatorMessage
+echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgModerator
 
 :msgOperator
@@ -372,7 +403,11 @@ set /p message=Say:
 goto commandsGuest
 :inheritOperator
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=operatorMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:operatorMessage
+echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgOperator
 
 :msgGuest
@@ -383,13 +418,15 @@ set /p message=Say:
 :commandsGuest
 if /I "%message%" == "/afk" (
   echo hshsfks >> "%networkdrive%\users\%name%\ping.dat"
-  echo [05] %name% is afk>> "%networkdrive%\chat.crm"
-  goto messages
+  set presection=messages
+  set sendmessage=[05] %name% is afk
+  goto sendmsg
 )
 if /I "%message%" == "/back" (
   echo hshsfks >> "%networkdrive%\users\%name%\ping.dat"
-  echo [05] %name% is back>> "%networkdrive%\chat.crm"
-  goto messages
+  set presection=messages
+  set sendmessage=[05] %name% is back
+  goto sendmsg
 )
 if /I "%message%" == "/list" (
   mode con cols=30lines=10
@@ -404,7 +441,11 @@ if /I "%message%" == "/me" goto me
 goto commandsHater
 :inheritGuest
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=guestMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:guestMessage
+echo chat> "%networkdrive%\users\%namfe%\ping.dat"
 goto msgGuest
 
 :msgHater
@@ -416,23 +457,17 @@ set /p message=Say:
 if /I "%message%" == "/host" goto hostchange
 if /I "%message%" == "/help" goto helpMain
 if /I "%message%" == "/cls" echo hshsfks >> "%networkdrive%\users\%name%\cls.dat"&goto messages
-if /I "%message%" == "/quit" (
-  echo chat> "%networkdrive%\users\%name%\ping.dat"
-  echo hshsfks >> "%networkdrive%\users\%name%\quit.dat"
-  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "%networkdrive%\chat.crm"
-  exit
-)
-if /I "%message%" == "/q" (
-  echo chat> "%networkdrive%\users\%name%\ping.dat"
-  echo hshsfks >> "%networkdrive%\users\%name%\quit.dat"
-  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "%networkdrive%\chat.crm"
-  exit
-)
+if /I "%message%" == "/quit" goto quit
+if /I "%message%" == "/q" goto quit
 if /I "%message:~0,1%" == "/" goto notCommand
 goto inherit%rank%
 :inheritHater
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
+set presection=haterMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [08]%name%: [15]%message%
+goto sendmsg
+:haterMessage
+echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgHater
 
 
@@ -636,25 +671,38 @@ echo   Press Enter to exit.
 pause >NUL
 goto messages
 
+:quit
+echo chat> "%networkdrive%\users\%name%\ping.dat"
+echo hshsfks >> "%networkdrive%\users\%name%\quit.dat"
+set presection=quitMessage
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left
+goto sendmsg
+:quitMessage
+exit
+
 :say
 cls
 set /p say="> "
 echo chat> "%networkdrive%\users\%name%\ping.dat"
-echo [19] CONSOLE: %say%>> "%networkdrive%\chat.crm"
-goto messages
+set presection=messages
+set sendmessage=[19] CONSOLE: %say%
+goto sendmsg
 
 :me
 cls
 set /p me="> "
 echo chat> "%networkdrive%\users\%name%\ping.dat"
-echo [05] * %name% %me%>> "%networkdrive%\chat.crm"
-goto messages
+set presection=messages
+set sendmessage=[05] * %name% %me%
+goto sendmsg
 
 :history
 cls
 echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%networkdrive%\chat.crm"`) DO (colous Writesec "%%a"&set check=%%a)
+crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\hisout.crm"
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\hisout.crm"`) DO (colous Writesec "%%a"&set check=%%a)
+del /F "%appdata%\Batch_Chat\hisout.crm"
 del /F "%networkdrive%\users\%name%\history.dat"
 goto loop
