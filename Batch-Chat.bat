@@ -9,8 +9,6 @@ if not exist "%appdata%\Batch_Chat" goto net
 set cdd=%cd%
 ::Specifies the room you are in
 set room=Lobby
-::Verson of the Batch Chat
-set version=PreAlpha0.0.0.6
 ::Checks for the messages arguement for the messages window
 if "%1" == "messages" goto messagesstart
 ::Checks for the reset argument to reset the batch chat
@@ -63,7 +61,7 @@ goto %presection%
 ::Resets the directory to the files
 cd "%cdd%"
 ::Starts the messages window
-start Batch-Chat-Remake-Dev.bat messages
+start Batch-Chat.bat messages
 ::Assures that you are in the Data folder
 cd "%appdata%\Batch_Chat"
 ::Calls the latest variables from the user data files
