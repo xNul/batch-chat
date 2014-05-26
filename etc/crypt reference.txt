@@ -1,0 +1,21 @@
+Command Line Crypt V1.00 – encrypt and decrypt your files.
+Copyright codeode.com. All rights reserved.
+
+Flags:
+-encrypt Encrypts the file specified in the flag -infile.
+-decrypt Decrypts the file specified in the flag -infile.
+-key [yourkey] Key to use for crypting.
+-filekey [filename] Filename of a file with the key to use.
+-infile [filename] File to be encrypted or decrypted.
+-outfile [filename] File to save the encrypted/decrypted result in.
+
+Example 1 – encryption of a text file:
+crypt.exe -encrypt -key secret -infile plaintext.txt -outfile cipher.txt
+
+Example 2 – decryption of a file:
+crypt.exe -decrypt -key secret -infile cipher.txt -outfile decoded.txt
+
+Example 3 – encryption of a file using a file as key:
+crypt.exe -encrypt -filekey mykey.txt -infile plaintext.txt -outfile cipher.txt
+
+http://www.codeode.com/command-line-encrypt.html
