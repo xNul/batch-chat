@@ -39,7 +39,7 @@ the internet.
 
 ###Plans:
   - ~~Add custom network drive/custom setup~~
-  - ~~Add file encr~~~yption with crypt binary
+  - ~~Add file encr~~yption with crypt binary
   - Add rooms
   - Add legitimate ranks
   - Add an update system (eh, might as well)
