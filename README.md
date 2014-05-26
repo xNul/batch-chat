@@ -17,6 +17,7 @@ the internet.
   - Ping chat notification
   - Quick start
   - Command and help inheritance (for future ranks)
+  - Tag -reset to reset all data
 
 ###Commands:
   - /afk - Says you've gone afk
@@ -37,7 +38,7 @@ the internet.
 
 
 ###Plans:
-  - Add custom network drive/custom setup
+  - ~~Add custom network drive/custom setup~~
   - Add file encryption with crypt binary
   - Add rooms
   - Add legitimate ranks

@@ -12,7 +12,7 @@ set room=Lobby
 ::Checks for the messages arguement for the messages window
 if "%1" == "messages" goto messagesstart
 ::Checks for the reset argument to reset the batch chat
-if "%1" == "-reset" goto net
+if "%1" == "-reset" goto resetstart
 title Batch Chat - %version%
 goto config
 
@@ -39,8 +39,11 @@ echo.
 echo  What is your name?
 echo.
 set /p name=">"
+::If special network drive config exists
+set networkdrive=%networkdrive%
+if exist "networkdrive.bat" call "networkdrive.bat"&del /F "networkdrive.bat"
 ::Adds your username and other data into the chat drive
-if exist "Z:\users\%name%" (
+if exist "%networkdrive%\users\%name%" (
   cls
   echo.
   echo %name% is taken.
@@ -48,9 +51,9 @@ if exist "Z:\users\%name%" (
   pause >NUL
   goto start
 )
-if not exist "Z:\users\%name%" mkdir "Z:\users\%name%"
+if not exist "%networkdrive%\users\%name%" mkdir "%networkdrive%\users\%name%"
 ::Creates chat file
-if not exist "Z:\chat.crm" echo > "Z:\chat.crm"
+if not exist "%networkdrive%\chat.crm" echo > "%networkdrive%\chat.crm"
 ::Sets the place where it is supposed to be
 set presection=chat
 goto load
@@ -58,6 +61,7 @@ goto load
 ::Puts your name and rank in a file for future use
 echo set name=%name%> "settings.bat"
 echo set rank=Guest>> "settings.bat"
+echo set networkdrive=%networkdrive%>> "settings.bat"
 goto %presection%
 
 
@@ -68,13 +72,13 @@ goto %presection%
 ::Resets the directory to the files
 cd "%cdd%"
 ::Starts the messages window
-start Batch-Chat.bat messages
+start Batch_Chat.bat messages
 ::Assures that you are in the Data folder
 cd "%appdata%\Batch_Chat"
 ::Calls the latest variables from the user data files
 call "settings.bat"
 ::Remake user folder
-mkdir "Z:\users\%name%"
+mkdir "%networkdrive%\users\%name%"
 ::Resize window
 mode con cols=80lines=20
 ::Reverts back to the Data directory
@@ -85,7 +89,7 @@ echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 ::Prints chat to the screen and sets the last line to a variable
-for /f "tokens=1,2,3 delims=" %%a IN (Z:\chat.crm) DO (colous Writesec "%%a"&set check=%%a)
+for /f "tokens=1,2,3 delims=" %%a IN ("%networkdrive%\chat.crm") DO (colous Writesec "%%a"&set check=%%a)
 ::Saves the last line to another variable
 set old=%check%
 goto loop
@@ -96,22 +100,22 @@ cd "%appdata%\Batch_Chat"
 ::Calls the latest variables from the user data files
 call "settings.bat"
 ::Checks to see if a file is there so that it can excute a certain command
-if exist "Z:\users\%name%\cls.dat" goto cls
+if exist "%networkdrive%\users\%name%\cls.dat" goto cls
 ::Checks if command to quit has been made
-if exist "Z:\users\%name%\quit.dat" rmdir /S /Q "Z:\users\%name%"&exit
+if exist "%networkdrive%\users\%name%\quit.dat" rmdir /S /Q "%networkdrive%\users\%name%"&exit
 ::Prints history to screen
-if exist "Z:\users\%name%\history.dat" goto history
+if exist "%networkdrive%\users\%name%\history.dat" goto history
 ::Prints chat to the screen and sets the last line to a variable
-for /f "tokens=1,2,3 delims=" %%a IN (Z:\chat.crm) DO (set check=%%a)
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%networkdrive%\chat.crm"`) DO (set check=%%a)
 ::Checks to see if the last line has changed (a new message has been sent) if it has then it prints it to the screen, makes the directory the files, sets it as the new old variable, and plays a tune if a file isn't there
 if NOT "%check%" == "%old%" (
   colous Writesec "%check%"
   set old=%check%
   cd "%cdd%"
-  if not exist "Z:\users\%name%\ping.dat" (
+  if not exist "%networkdrive%\users\%name%\ping.dat" (
     madplay -Q ping.mp3
   ) else (
-    del /F "Z:\users\%name%\ping.dat"
+    del /F "%networkdrive%\users\%name%\ping.dat"
   )
 )
 goto loop
@@ -138,21 +142,33 @@ echo.
 ::Checks to see if there needs to be a different setup for a diff OS
 if winxp == true goto winxpsetup
 choice /c 1234>NUL
-if %ERRORLEVEL% == 1 goto setup1
-if %ERRORLEVEL% == 2 goto hostchange
-if %ERRORLEVEL% == 3 goto resetstart
-if %ERRORLEVEL% == 4 exit
+if "%ERRORLEVEL%" == "1" goto setup
+if "%ERRORLEVEL%" == "2" goto hostchange
+if "%ERRORLEVEL%" == "3" goto resetstart
+if "%ERRORLEVEL%" == "4" exit
 goto net
 :winxpsetup
-set /p step=">"
-if %step% == 1 goto setup1
-if %step% == 2 goto hostchange
-if %step% == 3 goto resetstart
-if %step% == 4 exit
+set /p step="> "
+if "%step%" == "1" goto setup
+if "%step%" == "2" goto hostchange
+if "%step%" == "3" goto resetstart
+if "%step%" == "4" exit
 goto net
 
+:setup
+cls
+echo.
+echo   Do you have a pre-existing
+echo  drive that you wish to host the
+echo  chat on? [Y/N]
+echo.
+set /p answer="> "
+if /I "%answer%" == "Y" goto setupnet
+if /I "%answer%" == "N" goto setup1
+goto setup
+
+::Instructions to setup sharing for the network drive
 :setup1
-::Instructions to setup Sharing for the network drive
 if not exist "C:\chat" mkdir "C:\chat"
 if not exist "C:\chat\users" mkdir "C:\chat\users"
 cls
@@ -199,6 +215,41 @@ echo.
 pause >NUL
 exit
 
+:setupnet
+cls
+echo.
+echo  What is the directory of
+echo   the network drive where
+echo   you want to store the chat?
+echo.
+echo      Ex: Z:\chat folder\foo
+echo.
+set /p networkdrive="> "
+if not exist "%networkdrive%" goto drivenot
+if not exist "%networkdrive%\users" mkdir "%networkdrive%\users"
+if not exist "%appdata%\Batch_Chat" mkdir "%appdata%\Batch_Chat"
+echo set networkdrive=%networkdrive%> "%appdata%\Batch_Chat\networkdrive.bat"
+goto setupnetcomplete
+
+:drivenot
+cls
+echo.
+echo  "%networkdrive%" does not exist.
+echo.
+echo   Press Enter to return.
+pause >NUL
+goto setupnet
+
+:setupnetcomplete
+cls
+echo.
+echo  Setup completed!
+echo.
+echo  Press Enter to exit.
+echo.
+pause >NUL
+exit
+
 :: RESET
 
 :stepreset
@@ -223,15 +274,13 @@ cls
 echo.
 echo  If you continue this will remove all settings and
 echo  chat data from your computer, thus allowing you
-echo  to reinstall the Batch Chat due to any errors.
+echo  to restart the Batch Chat fresh due to any errors.
 echo.
 echo    Do you want to continue? [Y/N]
 echo.
 set /p resetinput=">"
-if "%resetinput%" == "Y" goto stepreset
-if "%resetinput%" == "y" goto stepreset
-if "%resetinput%" == "N" goto net
-if "%resetinput%" == "n" goto net
+if /I "%resetinput%" == "Y" goto stepreset
+if /I "%resetinput%" == "N" goto net
 goto resetstart
 
 
@@ -243,7 +292,7 @@ cd "%appdata%\Batch_Chat"
 ::Calling variables
 call "settings.bat"
 ::Sends a joining message to the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has joined>> "Z:\chat.crm"&&echo chat>> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has joined>> "%networkdrive%\chat.crm"&&echo chat>> "%networkdrive%\users\%name%\ping.dat"
 goto messages
 
 :messages
@@ -266,12 +315,12 @@ cls
 ::Prompts for users input
 set /p message=Say: 
 ::Checks to see if the msg is a command
-if /I "%message%" == "/clsfile" echo > "Z:\chat.crm"&&goto msg%rank%
+if /I "%message%" == "/clsfile" echo > "%networkdrive%\chat.crm"&&goto msg%rank%
 if /I "%message%" == "/say" goto say
 goto commandsDirector
 :inheritAdmin
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgAdmin
 
 :msgDirector
@@ -283,7 +332,7 @@ set /p message=Say:
 goto commandsModerator
 :inheritDirector
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgDirector
 
 :msgModerator
@@ -295,7 +344,7 @@ set /p message=Say:
 goto commandsOperator
 :inheritModerator
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgModerator
 
 :msgOperator
@@ -307,7 +356,7 @@ set /p message=Say:
 goto commandsGuest
 :inheritOperator
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgOperator
 
 :msgGuest
@@ -317,29 +366,29 @@ set /p message=Say:
 ::Checks to see if the msg is a command
 :commandsGuest
 if /I "%message%" == "/afk" (
-  echo hshsfks >> "Z:\users\%name%\ping.dat"
-  echo [05] %name% is afk>> "Z:\chat.crm"
+  echo hshsfks >> "%networkdrive%\users\%name%\ping.dat"
+  echo [05] %name% is afk>> "%networkdrive%\chat.crm"
   goto messages
 )
 if /I "%message%" == "/back" (
-  echo hshsfks >> "Z:\users\%name%\ping.dat"
-  echo [05] %name% is back>> "Z:\chat.crm"
+  echo hshsfks >> "%networkdrive%\users\%name%\ping.dat"
+  echo [05] %name% is back>> "%networkdrive%\chat.crm"
   goto messages
 )
 if /I "%message%" == "/list" (
   mode con cols=30lines=10
   echo.
-  dir /B /P "Z:\users"
+  dir /B /P "%networkdrive%\users"
   echo.
   pause >NUL
   goto messages
 )
-if /I "%message%" == "/history" echo hshsfks >> "Z:\users\%name%\history.dat"&goto messages
+if /I "%message%" == "/history" echo hshsfks >> "%networkdrive%\users\%name%\history.dat"&goto messages
 if /I "%message%" == "/me" goto me
 goto commandsHater
 :inheritGuest
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgGuest
 
 :msgHater
@@ -350,24 +399,24 @@ set /p message=Say:
 :commandsHater
 if /I "%message%" == "/host" goto hostchange
 if /I "%message%" == "/help" goto helpMain
-if /I "%message%" == "/cls" echo hshsfks >> "Z:\users\%name%\cls.dat"&goto messages
+if /I "%message%" == "/cls" echo hshsfks >> "%networkdrive%\users\%name%\cls.dat"&goto messages
 if /I "%message%" == "/quit" (
-  echo chat> "Z:\users\%name%\ping.dat"
-  echo hshsfks >> "Z:\users\%name%\quit.dat"
-  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "Z:\chat.crm"
+  echo chat> "%networkdrive%\users\%name%\ping.dat"
+  echo hshsfks >> "%networkdrive%\users\%name%\quit.dat"
+  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "%networkdrive%\chat.crm"
   exit
 )
 if /I "%message%" == "/q" (
-  echo chat> "Z:\users\%name%\ping.dat"
-  echo hshsfks >> "Z:\users\%name%\quit.dat"
-  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "Z:\chat.crm"
+  echo chat> "%networkdrive%\users\%name%\ping.dat"
+  echo hshsfks >> "%networkdrive%\users\%name%\quit.dat"
+  echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has left>> "%networkdrive%\chat.crm"
   exit
 )
 if /I "%message:~0,1%" == "/" goto notCommand
 goto inherit%rank%
 :inheritHater
 ::If the msg is not a command it is a msg so it sends it into the chat
-echo [16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [08]%name%: [15]%message%>> "Z:\chat.crm"&echo chat> "Z:\users\%name%\ping.dat"
+echo [16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [08]%name%: [15]%message%>> "%networkdrive%\chat.crm"&echo chat> "%networkdrive%\users\%name%\ping.dat"
 goto msgHater
 
 
@@ -403,10 +452,10 @@ echo  type "exit" to Exit.
 echo.
 set /p push=">"
 if "%push%" == "exit" goto messages
-net use Z: /DELETE /y
+net use %networkdrive% /DELETE /y
 cls
-net use Z: \\%push%\chat
-if exist "Z:\users\%name%" rmdir /S /Q "Z:\users\%name%"
+net use %networkdrive% \\%push%\chat
+if exist "%networkdrive%\users\%name%" rmdir /S /Q "%networkdrive%\users\%name%"
 del /F "%appdata%\Batch_Chat\settings.bat"
 set presection=hostchange3
 goto load
@@ -557,7 +606,7 @@ cls
 echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-del /F "Z:\users\%name%\cls.dat"
+del /F "%networkdrive%\users\%name%\cls.dat"
 goto loop
 
 :notCommand
@@ -574,15 +623,15 @@ goto messages
 :say
 cls
 set /p say="> "
-echo chat> "Z:\users\%name%\ping.dat"
-echo [19] CONSOLE: %say%>> "Z:\chat.crm"
+echo chat> "%networkdrive%\users\%name%\ping.dat"
+echo [19] CONSOLE: %say%>> "%networkdrive%\chat.crm"
 goto messages
 
 :me
 cls
 set /p me="> "
-echo chat> "Z:\users\%name%\ping.dat"
-echo [05] * %name% %me%>> "Z:\chat.crm"
+echo chat> "%networkdrive%\users\%name%\ping.dat"
+echo [05] * %name% %me%>> "%networkdrive%\chat.crm"
 goto messages
 
 :history
@@ -590,6 +639,6 @@ cls
 echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-for /f "tokens=1,2,3 delims=" %%a IN (Z:\chat.crm) DO (colous Writesec "%%a"&set check=%%a)
-del /F "Z:\users\%name%\history.dat"
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%networkdrive%\chat.crm"`) DO (colous Writesec "%%a"&set check=%%a)
+del /F "%networkdrive%\users\%name%\history.dat"
 goto loop
