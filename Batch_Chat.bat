@@ -24,6 +24,12 @@ cd "%cdd%"
 xcopy "colous.exe" "%appdata%\Batch_Chat"
 cd "%appdata%\Batch_Chat"
 )
+cd "%appdata%\Batch_Chat"
+if not exist "crypt.exe" (
+cd "%cdd%"
+xcopy "crypt.exe" "%appdata%\Batch_Chat"
+cd "%appdata%\Batch_Chat"
+)
 goto start
 
 :start
@@ -40,8 +46,8 @@ echo  What is your name?
 echo.
 set /p name=">"
 ::If special network drive config exists
-set networkdrive=%networkdrive%
-if exist "networkdrive.bat" call "networkdrive.bat"&del /F "networkdrive.bat"
+set networkdrive=Z:
+if exist "networkdrive.bat" call "networkdrive.bat"
 ::Adds your username and other data into the chat drive
 if exist "%networkdrive%\users\%name%" (
   cls
@@ -54,14 +60,24 @@ if exist "%networkdrive%\users\%name%" (
 if not exist "%networkdrive%\users\%name%" mkdir "%networkdrive%\users\%name%"
 ::Creates chat file
 if not exist "%networkdrive%\chat.crm" echo > "%networkdrive%\chat.crm"
+if exist "networkdrive.bat" del /F "networkdrive.bat"
 ::Sets the place where it is supposed to be
 set presection=chat
 goto load
 :load
 ::Puts your name and rank in a file for future use
-echo set name=%name%> "settings.bat"
-echo set rank=Guest>> "settings.bat"
-echo set networkdrive=%networkdrive%>> "settings.bat"
+echo set name=%name%> "in.bat"
+echo set rank=Guest>> "in.bat"
+echo set networkdrive=%networkdrive%>> "in.bat"
+crypt -encrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "in.bat" -outfile "settings.bat">NUL
+del /F "in.bat"
+goto %presection%
+
+:decryptsettings
+cd "%appdata%\Batch_Chat"
+crypt -decrypt -key "7;;d;ss;9&*((*302!)_-!@#(021" -infile "settings.bat" -outfile "out.bat">NUL
+call "out.bat"
+del /F "out.bat"
 goto %presection%
 
 
@@ -76,7 +92,9 @@ start Batch_Chat.bat messages
 ::Assures that you are in the Data folder
 cd "%appdata%\Batch_Chat"
 ::Calls the latest variables from the user data files
-call "settings.bat"
+set presection=chatcall
+goto decryptsettings
+:chatcall
 ::Remake user folder
 mkdir "%networkdrive%\users\%name%"
 ::Resize window
@@ -97,8 +115,6 @@ goto loop
 :loop
 ::Assures that you are in the Data folder
 cd "%appdata%\Batch_Chat"
-::Calls the latest variables from the user data files
-call "settings.bat"
 ::Checks to see if a file is there so that it can excute a certain command
 if exist "%networkdrive%\users\%name%\cls.dat" goto cls
 ::Checks if command to quit has been made
@@ -290,7 +306,9 @@ goto resetstart
 ::Going back to the Data folder
 cd "%appdata%\Batch_Chat"
 ::Calling variables
-call "settings.bat"
+set presection=messagestartcall
+goto decryptsettings
+:messagestartcall
 ::Sends a joining message to the chat
 echo [16]%TIME:~0,2%:%TIME:~3,2% [10]%name% [9]has joined>> "%networkdrive%\chat.crm"&&echo chat>> "%networkdrive%\users\%name%\ping.dat"
 goto messages
@@ -302,8 +320,6 @@ mode con cols=30lines=2
 title Messages
 ::Still setting the Data folder
 cd "%appdata%\Batch_Chat"
-::Still calling variables
-call "settings.bat"
 ::Goes to your ranks commands
 goto msg%rank%
 
