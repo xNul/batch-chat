@@ -501,15 +501,16 @@ echo     Virtual LAN IP.
 echo.
 echo  type "exit" to Exit.
 echo.
-set /p push=">"
+set /p push="> "
 if "%push%" == "exit" goto messages
-net use %networkdrive% /DELETE /y
+if "%push%" == "" goto hostchange
+if exist 
+net use Z: /DELETE /y
 cls
-net use %networkdrive% \\%push%\chat
-if exist "%networkdrive%\users\%name%" rmdir /S /Q "%networkdrive%\users\%name%"
-del /F "%appdata%\Batch_Chat\settings.bat"
-set presection=hostchange3
-goto load
+net use Z: \\%push%\chat
+if exist "Z:\users\%name%" rmdir /S /Q "Z:\users\%name%"
+if exist "%appdata%\Batch_Chat\settings.bat" del /F "%appdata%\Batch_Chat\settings.bat"
+goto hostchange3
 
 :hostchange3
 ::Creates the Data folder
