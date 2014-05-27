@@ -84,10 +84,10 @@ del /F "out.bat"
 goto %presection%
 
 :sendmsg
-crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\chatout.crm"
+crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\chatout.crm">NUL
 echo %sendmessage%>> "%appdata%\Batch_Chat\chatout.crm"
 del /F "%networkdrive%\chat.crm"
-crypt -encrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%appdata%\Batch_Chat\chatout.crm" -outfile "%networkdrive%\chat.crm"
+crypt -encrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%appdata%\Batch_Chat\chatout.crm" -outfile "%networkdrive%\chat.crm">NUL
 del /F "%appdata%\Batch_Chat\chatout.crm"
 goto %presection%
 
@@ -118,9 +118,9 @@ echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 ::Decrypts and prints chat to the screen and sets the last line to a variable
-crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\out.crm"
-for /f "tokens=1,2,3 delims=" %%a IN ("%appdata%\Batch_Chat\out.crm") DO (colous Writesec "%%a"&set check=%%a)
-del /F "%appdata%\Batch_Chat\out.crm"
+crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\outloop.crm"
+for /f "tokens=1,2,3 delims=" %%a IN ("%appdata%\Batch_Chat\outloop.crm") DO (colous Writesec "%%a"&set check=%%a)
+del /F "%appdata%\Batch_Chat\outloop.crm">NUL
 ::Saves the last line to another variable
 set old=%check%
 goto loop
@@ -135,9 +135,9 @@ if exist "%networkdrive%\users\%name%\quit.dat" rmdir /S /Q "%networkdrive%\user
 ::Prints history to screen
 if exist "%networkdrive%\users\%name%\history.dat" goto history
 ::Decrypts and prints chat to the screen and sets the last line to a variable
-crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\out.crm"
-for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\out.crm"`) DO (set check=%%a)
-del /F "%appdata%\Batch_Chat\out.crm"
+crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\outloop.crm"
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\outloop.crm"`) DO (set check=%%a)
+del /F "%appdata%\Batch_Chat\outloop.crm">NUL
 ::Checks to see if the last line has changed (a new message has been sent) if it has then it prints it to the screen, makes the directory the files, sets it as the new old variable, and plays a tune if a file isn't there
 if NOT "%check%" == "%old%" (
   colous Writesec "%check%"
@@ -701,7 +701,7 @@ cls
 echo Lobby
 echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-crypt -decript -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\hisout.crm"
+crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\hisout.crm">NUL
 for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\hisout.crm"`) DO (colous Writesec "%%a"&set check=%%a)
 del /F "%appdata%\Batch_Chat\hisout.crm"
 del /F "%networkdrive%\users\%name%\history.dat"

@@ -50,6 +50,7 @@ or a similar program to chat over the internet.
       Batch_Chat itself where it actually
       encrypts the chat to stop possible
       decryption from viewing sourcecode.
+  - Review chat bugs and delay due to encryption
 
 
 
