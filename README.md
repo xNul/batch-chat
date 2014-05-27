@@ -4,10 +4,9 @@
 A chat made in Batch of all things.
 This chat was initially created by me a few years ago when I started
 to get interested in programming.  I have recently, for no logical reason,
-started to improve it.  It cannot communicate over the internet directly and
-I will not be adding this via a binary.  It can only send messages locally
-on your network.  BUT you can use Hamachi or a similar program to chat over
-the internet.
+started to improve it.  It cannot communicate over the internet directly,
+it can only send messages locally on your network.  BUT you can use Hamachi
+or a similar program to chat over the internet.
 
 ###Features:
   - Local Area Network (LAN) chat
@@ -47,6 +46,10 @@ the internet.
   - Add encryption command
   - Add more creative, fun, enjoyable commands
   - Add custom commands
+  - Add encryption in the portion of the
+      Batch_Chat itself where it actually
+      encrypts the chat to stop possible
+      decryption from viewing sourcecode.
 
 
 
