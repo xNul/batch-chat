@@ -119,8 +119,8 @@ echo.
 echo -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 ::Decrypts and prints chat to the screen and sets the last line to a variable
 crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\outloop.crm">NUL
-for /f "tokens=1,2,3 delims=" %%a IN ("%appdata%\Batch_Chat\outloop.crm") DO (colous Writesec "%%a"&set check=%%a)
-del /F "%appdata%\Batch_Chat\outloop.crm">NUL
+for /f "tokens=1,2,3 delims=" %%a IN ("%appdata%\Batch_Chat\outloop.crm") DO (colous Writesec "%%a"&set check=%%a)>NUL
+del /F "%appdata%\Batch_Chat\outloop.crm"
 ::Saves the last line to another variable
 set old=%check%
 goto loop
@@ -136,8 +136,8 @@ if exist "%networkdrive%\users\%name%\quit.dat" rmdir /S /Q "%networkdrive%\user
 if exist "%networkdrive%\users\%name%\history.dat" goto history
 ::Decrypts and prints chat to the screen and sets the last line to a variable
 crypt -decrypt -key "&492((@$*9Hfyibni#*9n8034-=_)r9" -infile "%networkdrive%\chat.crm" -outfile "%appdata%\Batch_Chat\outloop.crm">NUL
-for /f "usebackq tokens=1,2,3 delims=" %%a IN (`type "%appdata%\Batch_Chat\outloop.crm"`) DO (set check=%%a)
-del /F "%appdata%\Batch_Chat\outloop.crm">NUL
+for /f "usebackq tokens=1,2,3 delims=" %%a IN (`if exist "%appdata%\Batch_Chat\outloop.crm" type "%appdata%\Batch_Chat\outloop.crm"`) DO (set check=%%a)
+if exist "%appdata%\Batch_Chat\outloop.crm" del /F "%appdata%\Batch_Chat\outloop.crm"
 ::Checks to see if the last line has changed (a new message has been sent) if it has then it prints it to the screen, makes the directory the files, sets it as the new old variable, and plays a tune if a file isn't there
 if NOT "%check%" == "%old%" (
   colous Writesec "%check%"
@@ -504,7 +504,7 @@ echo.
 set /p push="> "
 if "%push%" == "exit" goto messages
 if "%push%" == "" goto hostchange
-if exist 
+if not exist "\\%push%\chat" goto hostchange
 net use Z: /DELETE /y
 cls
 net use Z: \\%push%\chat
