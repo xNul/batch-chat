@@ -1,4 +1,4 @@
-#Batch_Chat - v1.1
+Batch_Chat - v1.1
 ==========
 
 A chat made in Batch of all things.
@@ -8,7 +8,7 @@ started to improve it.  It cannot communicate over the internet directly,
 it can only send messages locally on your network.  BUT you can use Hamachi
 or a similar program to chat over the internet.
 
-###Features:
+### Features:
   - Local Area Network (LAN) chat
   - Support for Virtual LAN IP's
   - Group chat
@@ -19,7 +19,7 @@ or a similar program to chat over the internet.
   - Tag -reset to reset all data
   - File encryption
 
-###Commands:
+### Commands:
   - /afk - Says you've gone afk
   - /back - Says you're back
   - /cls - Clears your screen of previous text
@@ -37,7 +37,7 @@ or a similar program to chat over the internet.
 
 
 
-###Plans:
+### Plans:
   - ~~Add custom network drive/custom setup~~
   - ~~Add file encryption with crypt binary~~
   - Add rooms
