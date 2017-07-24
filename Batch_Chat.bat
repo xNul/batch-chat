@@ -163,7 +163,7 @@ echo.
 echo  Press 1 to setup. After
 echo  pressing 1 follow the
 echo  instructions. Press
-echo  2 to reset all data.
+echo  3 to reset all data.
 echo.
 echo   1.) Setup as host
 echo   2.) Setup as client
@@ -189,9 +189,9 @@ goto net
 :setup
 cls
 echo.
-echo   Do you have a pre-existing
-echo  drive that you wish to host the
-echo  chat on? [Y/N]
+echo   Do you have a pre-existing network
+echo  drive on which you wish to host the
+echo  chat? [Y/N]
 echo.
 set /p answer="> "
 if /I "%answer%" == "Y" goto setupnet
@@ -356,7 +356,7 @@ goto commandsDirector
 :inheritAdmin
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=adminMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [09]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :adminMessage
 echo chat> "%networkdrive%\users\%name%\ping.dat"
@@ -372,7 +372,7 @@ goto commandsModerator
 :inheritDirector
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=directorMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [12]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :directorMessage
 echo chat> "%networkdrive%\users\%name%\ping.dat"
@@ -388,7 +388,7 @@ goto commandsOperator
 :inheritModerator
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=moderatorMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [13]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :moderatorMessage
 echo chat> "%networkdrive%\users\%name%\ping.dat"
@@ -404,7 +404,7 @@ goto commandsGuest
 :inheritOperator
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=operatorMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [14]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :operatorMessage
 echo chat> "%networkdrive%\users\%name%\ping.dat"
@@ -442,7 +442,7 @@ goto commandsHater
 :inheritGuest
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=guestMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [15]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :guestMessage
 echo chat> "%networkdrive%\users\%namfe%\ping.dat"
@@ -464,7 +464,7 @@ goto inherit%rank%
 :inheritHater
 ::If the msg is not a command it is a msg so it sends it into the chat
 set presection=haterMessage
-set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [08]%name%: [15]%message%
+set sendmessage=[16]%TIME:~0,2%:%TIME:~3,2% [04]%rank% [0]%name%: [0]%message%
 goto sendmsg
 :haterMessage
 echo chat> "%networkdrive%\users\%name%\ping.dat"
@@ -641,6 +641,7 @@ cls
 echo.
 echo  Your commands are:
 :helpHater
+echo   /help - Lists all commands
 echo   /host - Changes the host computer to a
 echo           LAN/Virtual LAN IP
 echo   /cls - Clears your screen of previous text
