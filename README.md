@@ -5,8 +5,8 @@ Batch_Chat - v1.1
 
 A chat made in Batch of all things.
 This chat was first created in 2011-2012 when I started
-to get interested in programming.  I have recently (2014), for no logical reason,
-started to improve it.  It cannot communicate over the internet directly,
+to get interested in programming.  Now it's 2014, and for no logical reason,
+I have started to improve it.  It cannot communicate over the internet directly,
 it can only send messages locally on your network.  BUT you can use Hamachi
 or a similar program to chat over the internet.
 
