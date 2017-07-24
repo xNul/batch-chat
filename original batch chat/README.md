@@ -17,11 +17,11 @@ BUT you can use Hamachi or a similar program to chat over the internet.
   - Help and command inheritance
   - Ranks!
   - Rooms!
-  - Private messaging **not finished**
+  - **unfinished**: Private messaging
 
 ### Commands:
   - /help - Shows you all commands
-  - /help [command] - Shows you the command           specified.
+  - /help [command] - Shows you the command specified.
   - /cls - Clears your screen only
   - /rcls - Clears your room's log.
   - /disconnect - Disconnect from chatroom
@@ -36,8 +36,8 @@ BUT you can use Hamachi or a similar program to chat over the internet.
   - /delete - Delete a chatroom
   - /dimensions - Change window dimensions.
   - /connectinst - Instructions on how to connect chats together.
-  - /msg - Open a Private Chat with another player **not finished**
-  - /chat - Return to a Private Chat with another player **not finished**
+  - /msg - **unfinished**: Open a Private Chat with another player
+  - /chat - **unfinished**: Return to a Private Chat with another player
 
 
 
@@ -45,7 +45,7 @@ BUT you can use Hamachi or a similar program to chat over the internet.
 
 ### Color codes:
 
-To use color codes while chatting, simply type "[<insert color code>]<my text>".
+To use color codes while chatting, simply type "[&lt;insert color code&gt;]&lt;my text&gt;".
 So, for example, I could type "[12]Hello [5]world[12]!" to send a message
 that looks like this:
 
