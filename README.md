@@ -1,4 +1,4 @@
-![chat preview](http://i.imgur.com/6S5f1Qh.png}
+![chat preview](http://i.imgur.com/6S5f1Qh.png)
 
 Batch_Chat - v1.1
 ==========
@@ -67,11 +67,11 @@ or a similar program to chat over the internet.
   - DOSBox (if I remember correctly)
 
 ### Quick Instructions:
-  1.) run "Batch_Chat.bat"
-  2.) follow the onscreen instructions (tip: you need a host before there can be a client)
-  3.) run Batch Chat again
-  4.) type "/q" into the "Messages" window that comes up
-  5.) run Batch Chat again and everything should be working well.  You can now send messages using the Messages window
+  1. run "Batch_Chat.bat"
+  2. follow the onscreen instructions (tip: you need a host before there can be a client)
+  3. run Batch Chat again
+  4. type "/q" into the "Messages" window that comes up
+  5. run Batch Chat again and everything should be working well.  You can now send messages using the Messages window
 
 Note: when connecting to a host, you may need to be authenticated.
 For example, my computer has a username and password, so client computers had to put
@@ -102,7 +102,7 @@ Lastly, if you have any problems, just open up an issue and I'll be happy to hel
 
 ### Color codes:
 
-To use color codes while chatting, simply type "[<insert color code>]<my text>".
+To use color codes while chatting, simply type "[&lt;insert color code&gt;]&lt;my text&gt;".
 So, for example, I could type "[12]Hello [5]world[12]!" to send a message
 that looks like this:
 
